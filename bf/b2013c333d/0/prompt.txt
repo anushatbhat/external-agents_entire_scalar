@@ -1,0 +1,44 @@
+Inspect my project structure and improve orchestrator/quality_agent.py.
+
+Add clear comments and useful logging around the data quality checks.
+Do not change the existing functionality.
+After making the change, show me exactly what you changed.
+
+---
+
+Update orchestrator/quality_agent.py so the Quality Agent performs REAL data quality checks against my Databricks tables.
+
+The tables are:
+- customers_bronze
+- sales_bronze
+
+The agent must:
+1. Connect to Databricks using the Databricks SQL Connector for Python.
+2. Check NULL values.
+3. Check duplicate customer IDs.
+4. Check invalid sales values such as NULL or negative amounts.
+5. Print the actual results of each check.
+6. Print PASS or FAIL for each check.
+7. Print an overall QUALITY RESULT: PASSED or FAILED.
+
+Do not hardcode fake results.
+Do not put passwords or access tokens directly in the source code. Use environment variables for credentials.
+
+First inspect the existing project and explain what connection information you need from me before making assumptions.
+
+---
+
+SELECT current_catalog(), current_schema();
+
+---
+
+SHOW TABLES;
+
+---
+
+DESCRIBE TABLE customers_bronze;
+  DESCRIBE TABLE sales_bronze;
+
+---
+
+spark.table("sales_bronze").printSchema()

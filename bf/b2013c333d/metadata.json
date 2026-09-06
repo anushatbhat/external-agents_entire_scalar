@@ -1,0 +1,26 @@
+{
+  "cli_version": "0.10.5",
+  "checkpoint_id": "bfb2013c333d",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 6,
+  "files_touched": [
+    "orchestrator/quality_agent.py"
+  ],
+  "sessions": [
+    {
+      "metadata": "/bf/b2013c333d/0/metadata.json",
+      "transcript": "/bf/b2013c333d/0/full.jsonl",
+      "compact_transcript": "/bf/b2013c333d/0/transcript.jsonl",
+      "content_hash": "/bf/b2013c333d/0/content_hash.txt",
+      "prompt": "/bf/b2013c333d/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 22785,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 201728,
+    "output_tokens": 2332,
+    "api_call_count": 12
+  }
+}
