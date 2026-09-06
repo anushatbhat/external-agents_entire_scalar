@@ -43,6 +43,9 @@ type transcriptAnalyzer interface {
 	ExtractPrompts(sessionRef string, offset int) ([]string, error)
 	ExtractSummary(sessionRef string) (string, bool, error)
 }
+type textGenerator interface {
+	GenerateText(prompt, model string) (string, error)
+}
 
 func WriteJSON(w io.Writer, v any) error {
 	enc := json.NewEncoder(w)
@@ -297,6 +300,24 @@ func HandleExtractSummary(args []string, stdout io.Writer, analyzer transcriptAn
 		return err
 	}
 	return WriteJSON(stdout, ExtractSummaryResponse{Summary: summary, HasSummary: hasSummary})
+}
+
+func HandleGenerateText(args []string, stdin io.Reader, stdout io.Writer, generator textGenerator) error {
+	fs := flag.NewFlagSet("generate-text", flag.ContinueOnError)
+	fs.SetOutput(io.Discard)
+	model := fs.String("model", "", "model")
+	if err := fs.Parse(args); err != nil {
+		return err
+	}
+	prompt, err := io.ReadAll(stdin)
+	if err != nil {
+		return err
+	}
+	text, err := generator.GenerateText(string(prompt), *model)
+	if err != nil {
+		return err
+	}
+	return WriteJSON(stdout, GenerateTextResponse{Text: text})
 }
 
 func DefaultSessionDir(repoPath string) string { return filepath.Join(repoPath, ".entire", "tmp") }

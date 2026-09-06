@@ -1,15 +1,28 @@
 package omp
 
 import (
+	"context"
 	"os/exec"
 	"strings"
 
 	"github.com/entireio/external-agents/agents/entire-agent-omp/internal/protocol"
+	"github.com/entireio/external-agents/llm"
 )
 
-type Agent struct{}
+type Agent struct {
+	Generator llm.Generator
+}
 
-func New() *Agent { return &Agent{} }
+func New() *Agent {
+	generator, _, err := llm.FromEnvironment()
+	if err != nil {
+		return &Agent{}
+	}
+	return NewWithGenerator(generator)
+}
+
+// NewWithGenerator creates an agent with an optional text generator.
+func NewWithGenerator(generator llm.Generator) *Agent { return &Agent{Generator: generator} }
 
 func (a *Agent) Info() protocol.InfoResponse {
 	return protocol.InfoResponse{
@@ -30,9 +43,17 @@ func (a *Agent) Info() protocol.InfoResponse {
 			Hooks:              true,
 			TranscriptAnalyzer: true,
 			CompactTranscript:  true,
+			TextGenerator:      a.Generator != nil,
 			UsesTerminal:       true,
 		},
 	}
+}
+
+func (a *Agent) GenerateText(prompt, model string) (string, error) {
+	if a.Generator == nil {
+		return "", protocol.ErrTextGeneratorUnavailable
+	}
+	return a.Generator.Generate(context.Background(), llm.Request{Prompt: prompt, Model: model})
 }
 
 func (a *Agent) Detect() protocol.DetectResponse {

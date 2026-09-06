@@ -1,11 +1,13 @@
 package omp
 
 import (
+	"context"
 	"os"
 	"path/filepath"
 	"testing"
 
 	"github.com/entireio/external-agents/agents/entire-agent-omp/internal/protocol"
+	"github.com/entireio/external-agents/llm"
 )
 
 func TestDetectUsesPath(t *testing.T) {
@@ -19,6 +21,24 @@ func TestDetectUsesPath(t *testing.T) {
 	}
 	if !New().Detect().Present {
 		t.Fatal("Detect().Present = false with omp on PATH")
+	}
+}
+
+func TestGenerateTextUsesInjectedGenerator(t *testing.T) {
+	var request llm.Request
+	agent := NewWithGenerator(llm.GeneratorFunc(func(_ context.Context, got llm.Request) (string, error) {
+		request = got
+		return "short summary", nil
+	}))
+	if !agent.Info().Capabilities.TextGenerator {
+		t.Fatal("text_generator = false with configured generator")
+	}
+	text, err := agent.GenerateText("summarize this", "model-1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if text != "short summary" || request != (llm.Request{Prompt: "summarize this", Model: "model-1"}) {
+		t.Fatalf("text = %q, request = %#v", text, request)
 	}
 }
 

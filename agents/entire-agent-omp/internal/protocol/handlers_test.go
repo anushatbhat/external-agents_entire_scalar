@@ -63,6 +63,15 @@ func (testAnalyzer) ExtractModifiedFiles(string, int) ([]string, int, error) {
 func (testAnalyzer) ExtractPrompts(string, int) ([]string, error) { return []string{"hello"}, nil }
 func (testAnalyzer) ExtractSummary(string) (string, bool, error)  { return "summary", true, nil }
 
+type testTextGenerator struct {
+	prompt, model string
+}
+
+func (g *testTextGenerator) GenerateText(prompt, model string) (string, error) {
+	g.prompt, g.model = prompt, model
+	return "generated", nil
+}
+
 func TestCoreProtocolHandlers(t *testing.T) {
 	var out bytes.Buffer
 	if err := HandleGetSessionID(strings.NewReader(`{"session_id":"id-1"}`), &out, testProvider{}); err != nil {
@@ -148,6 +157,20 @@ func TestTranscriptAndAnalyzerHandlers(t *testing.T) {
 	out.Reset()
 	if err := HandleExtractSummary([]string{"--session-ref", "file"}, &out, analyzer); err != nil || out.String() != `{"summary":"summary","has_summary":true}`+"\n" {
 		t.Fatalf("summary: %q, %v", out.String(), err)
+	}
+}
+
+func TestHandleGenerateText(t *testing.T) {
+	generator := &testTextGenerator{}
+	var out bytes.Buffer
+	if err := HandleGenerateText([]string{"--model", "model-1"}, strings.NewReader("summarize this"), &out, generator); err != nil {
+		t.Fatal(err)
+	}
+	if out.String() != `{"text":"generated"}`+"\n" {
+		t.Fatalf("output = %q", out.String())
+	}
+	if generator.prompt != "summarize this" || generator.model != "model-1" {
+		t.Fatalf("prompt = %q, model = %q", generator.prompt, generator.model)
 	}
 }
 

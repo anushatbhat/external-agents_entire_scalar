@@ -1,8 +1,13 @@
 package protocol
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"errors"
+)
 
 const ProtocolVersion = 1
+
+var ErrTextGeneratorUnavailable = errors.New("text generator is not configured")
 
 type DeclaredCapabilities struct {
 	Hooks                  bool `json:"hooks"`
@@ -68,6 +73,10 @@ type ExtractPromptsResponse struct {
 type ExtractSummaryResponse struct {
 	Summary    string `json:"summary"`
 	HasSummary bool   `json:"has_summary"`
+}
+
+type GenerateTextResponse struct {
+	Text string `json:"text"`
 }
 
 type CompactTranscriptResponse struct {

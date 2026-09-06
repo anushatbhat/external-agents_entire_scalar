@@ -37,6 +37,18 @@ External agent discovery is opt-in. Once an `entire-agent-<name>` binary is on y
 
 Without this flag, Entire ignores external agent binaries even when they're installed.
 
+### Optional LLM summary provider
+
+The OMP adapter can also expose Entire's `text_generator` capability for checkpoint summaries. It is disabled by default and does not include an LLM SDK, API key, or network call. To enable it, configure a local provider command; Entire sends the summary prompt on standard input and reads the generated text from standard output:
+
+```bash
+export ENTIRE_LLM_COMMAND=/path/to/your-llm-command
+export ENTIRE_LLM_ARGS='["generate","--model={model}"]'
+entire configure --summarize-provider omp --summarize-model your-model
+```
+
+`{model}` is replaced with Entire's requested model. `ENTIRE_LLM_ARGS` is optional and must be a JSON array of command arguments. The command is entirely user-provided, so it may target any compatible local or remote provider.
+
 ### Qwen Code
 
 Qwen support targets the terminal `qwen` coding agent:
