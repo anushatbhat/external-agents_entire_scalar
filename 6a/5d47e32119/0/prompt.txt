@@ -1,0 +1,39 @@
+Inspect this repository and implement a small, meaningful LLM-based agent capability that fits the existing architecture.
+
+Requirements:
+
+1. First inspect the existing agent architecture, entry points, tests, and README.
+2. Do not rewrite or duplicate the existing agent framework.
+3. Add the smallest useful LLM component that can be used by the existing agents.
+4. Keep the implementation provider-agnostic where practical; do not hardcode API keys or require credentials just to run tests.
+5. Add a simple interface/mock implementation so the behavior can be tested without calling a real LLM.
+6. Add at least one focused unit test.
+7. Update the README briefly with how the new LLM component fits into the architecture.
+8. Run the relevant tests.
+9. Show me the final diff and explain which files you changed and why.
+10. Do not commit the changes.
+
+Before editing, explain your proposed architecture and wait for my confirmation.
+
+---
+
+Proceed with the proposed architecture.
+
+Implement it now, keeping the change minimal and confined to the existing architecture.
+
+Requirements to preserve:
+
+* Do not modify or remove the unrelated existing settings changes.
+* Do not add API keys, credentials, or mandatory network calls.
+* Keep the LLM provider optional.
+* Use the existing `text_generator` capability/protocol.
+* Add focused unit tests.
+* Run the relevant Go tests.
+* Do not commit anything.
+
+After implementation, show me:
+
+1. `git status`
+2. the complete diff
+3. tests run and their results
+4. a short explanation of the implementation and any limitations.
